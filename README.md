@@ -1,21 +1,28 @@
 # tarot-reels-skill
 
 Skills de Claude Code para generar reels musicales AI para Instagram / Meta Ads / TikTok.  
-Pipeline completo: guión narrativo → audio AI → clips con identity lock → post-producción.
+Pipeline completo: configuración de marca → guión narrativo → audio AI → clips con identity lock → post-producción.
 
 ## Skills disponibles
 
 | Skill | Función |
 |-------|---------|
-| `song-script` | Guión de historia cantada (9 beats: Hook→Tensión→Resolución→CTA) |
+| `brand` | Configura brand.json con datos del negocio, personaje y tono (hacer una sola vez) |
+| `song-script` | Guión de historia cantada (9 beats: Hook→Pain→Agitation→Dream→Bridge→Solution→Proof→Transformation→CTA) |
 | `video-gen` | Clips AI con identity lock via fal.ai (Kling O3 + Flux character sheet) |
 | `reels-editor` | Captions + audio mix + AV sync (HyperFrames + faster-whisper + ffmpeg) |
 
 ## Pipeline completo — Reel Musical AI
 
 ```
-song-script → Beatra (audio) → video-gen → reels-editor → reel final
+brand (1 vez) → song-script → Beatra (audio) → video-gen → reels-editor → reel final
 ```
+
+### 0. Configuración de marca — brand (solo la primera vez)
+```bash
+npx skills add jadsajsdlkdqwioqodkwl/tarot-reels-skill --skill brand
+```
+Crea `brand.json` con toda la info del negocio, personaje y preferencias visuales. Todos los demás skills lo leen automáticamente.
 
 ### 1. Guión — song-script
 ```bash
