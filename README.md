@@ -5,7 +5,7 @@ Skills de Claude Code para edición de reels de Instagram/Meta Ads con HyperFram
 ## Instalar
 
 ```bash
-npx skills add tuusuario/tarot-reels-skill --skill reels-editor
+npx skills add jadsajsdlkdqwioqodkwl/tarot-reels-skill --skill reels-editor
 ```
 
 ## Requisitos
