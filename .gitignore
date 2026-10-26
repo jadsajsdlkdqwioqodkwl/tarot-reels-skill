@@ -7,3 +7,13 @@ renders/
 node_modules/
 brand.css
 .env
+*.env
+
+# Pipeline outputs (locales, no se commitean)
+outputs/beats/
+outputs/audio/
+logs/fal-api.jsonl
+
+# Character sheets (pueden contener imágenes de personas)
+references/characters/
+references/aesthetics/

@@ -1,0 +1,20 @@
+{
+  "brandName": "Tarot para Principiantes",
+  "language": "es",
+  "dialect": "neutro",
+  "colors": {
+    "accent": "#FFC83D",
+    "dark": "#1A0B2E"
+  },
+  "font": {
+    "family": "Anton"
+  },
+  "ratio": "4:5",
+  "motion": "medium",
+  "character": {
+    "name": "Luna",
+    "description": "Mujer latina 28-35 años aparentes, ojos oscuros y mirada intensa, cabello largo oscuro con mechones dorados, vestimenta: túnica morada con detalles dorados, joyería étnica con cristales",
+    "world": "Interior místico: velas, cristales, tela de terciopelo morado, humo dorado, cartas del tarot iluminadas, luz de luna suave",
+    "sheet_path": "references/characters/luna/"
+  }
+}
