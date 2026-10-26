@@ -1,0 +1,175 @@
+<!doctype html>
+<!-- ============================================================================
+reels-editor · TEMPLATE "MINIMAL" (HyperFrames · 4:5 · 1080x1350)
+Es el DEFAULT desde 2026-10-20 (brand.json -> captions.style "minimal", hook.style "editorial").
+
+  Subtítulos: frases de 2-4 palabras (scripts/build-chunk-captions.mjs), letra fina blanca
+              con contorno simple, corte seco, sin chips. La palabra que se dice se perfila en dorado (--cap-hi).
+              Posición: --cap-bottom 385px en 4:5 (~30% desde abajo, un poco bajo el centro).
+  Headline:   serif editorial tipeado letra a letra (línea 1 blanca, línea 2 itálica dorada)
+              con filete fino. SIN chips, SIN cajas. El TEXTO lo elige el usuario: preguntárselo.
+
+Placeholders:
+  {{DURATION}}    duración del STREAM DE VIDEO del master (ffprobe -select_streams v:0)
+  {{MASTER_SRC}}  ruta relativa al master, ej: reel-slug/master.mp4
+  {{CHUNKS_SRC}}  ruta relativa al captions.js de frases, ej: reel-slug/captions.js
+  {{HEADLINE_1}}  línea 1 del headline (≤ ~16 caracteres a 92px; case natural, no MAYÚSCULAS)
+  {{HEADLINE_2}}  línea 2 del headline (sale en itálica dorada = el punch)
+  {{HL_IN_1}} {{HL_IN_2}}  segundos de inicio del tipeo de cada línea (= SFX typing; típico 0.35 y 0.9)
+  {{HL_OUT}}      segundo en que sale el headline (antes del primer corte grande / ≤ 8 s)
+Si el headline va sobre fondos claros, el velo superior (#veil-top) ya lo oscurece; verificar con snapshot.
+Fuentes: Montserrat 600 (subtítulos) y Playfair Display (headline), por Google Fonts.
+============================================================================ -->
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1350" />
+    <link rel="stylesheet" href="brand.css" />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Playfair+Display:ital,wght@0,600;1,500&display=swap");
+      :root {
+        --cap-font: "Montserrat", "Segoe UI", Arial, sans-serif;
+        --cap-weight: 600;
+        --cap-size: 42px;
+        --cap-min: 32px;
+        --cap-max-w: 860px;
+        --cap-stroke: 1.6px;
+        --cap-bottom: 385px;   /* ~30% desde abajo: un poco bajo el centro */
+        --cap-hi: #FFC83D;     /* contorno de la palabra que se está diciendo */
+        --hl-font: "Playfair Display", Georgia, serif;
+        --hl-size: 92px;
+        --hl-top: 118px;
+        --hl-accent: #FFC83D;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="{{CHUNKS_SRC}}"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1350px; overflow: hidden; background: #000; font-family: system-ui, sans-serif; }
+      #root { position: relative; width: 1080px; height: 1350px; }
+      #main-v { width: 1080px; height: 1350px; object-fit: cover; }
+
+      /* velo superior solo mientras está el headline (lo enciende el timeline) */
+      #veil-top {
+        position: absolute; left: 0; right: 0; top: 0; height: 640px; z-index: 12; opacity: 0;
+        background: linear-gradient(to bottom, rgba(18,8,32,0.62) 0%, rgba(18,8,32,0.34) 45%, rgba(18,8,32,0) 100%);
+        pointer-events: none;
+      }
+      /* velo inferior muy suave para que la frase lea sobre fondos claros */
+      #veil-bottom {
+        position: absolute; left: 0; right: 0; bottom: 0; height: 420px; z-index: 10;
+        background: linear-gradient(to top, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0) 100%);
+        pointer-events: none;
+      }
+
+      /* ===== HEADLINE editorial ===== */
+      #headline {
+        position: absolute; top: var(--hl-top); left: 60px; right: 144px; z-index: 40;
+        text-align: center; color: #fff; opacity: 0;
+        font-family: var(--hl-font); font-size: var(--hl-size); line-height: 1.04; letter-spacing: -0.012em;
+        text-shadow: 0 2px 18px rgba(8,2,20,0.55), 0 1px 3px rgba(8,2,20,0.5);
+      }
+      #headline .rule { display: block; width: 74px; height: 2px; margin: 0 auto 26px; background: var(--hl-accent); transform-origin: center; }
+      #headline .ln { display: block; white-space: nowrap; }
+      #headline .ln.two { font-style: italic; font-weight: 500; color: var(--hl-accent); }
+      #headline .ch { display: inline-block; opacity: 0; }
+      #headline .sp { display: inline-block; width: 0.26em; }
+
+      /* ===== SUBTÍTULOS minimal ===== */
+      #cap-layer { position: absolute; left: 60px; right: 144px; bottom: var(--cap-bottom); height: 120px; z-index: 20; }
+      .cw { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; visibility: hidden; opacity: 0; }
+      .cw span {
+        display: inline-block; white-space: nowrap; text-align: center;
+        font-family: var(--cap-font); font-weight: var(--cap-weight); font-size: var(--cap-size);
+        line-height: 1.15; letter-spacing: 0.005em; color: #fff;
+        -webkit-text-stroke: var(--cap-stroke) rgba(0,0,0,0.9); paint-order: stroke fill;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.42);
+      }
+      .cw .wd { display: inline; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="{{DURATION}}" data-width="1080" data-height="1350">
+      <video id="main-v" class="clip" data-start="0" data-duration="{{DURATION}}" data-track-index="0" data-media-start="0"
+             src="{{MASTER_SRC}}" muted playsinline></video>
+      <audio id="main-a" data-start="0" data-duration="{{DURATION}}" data-track-index="3" data-media-start="0"
+             src="{{MASTER_SRC}}" data-volume="1"></audio>
+
+      <div id="veil-bottom"></div>
+      <div id="veil-top"></div>
+      <div id="cap-layer"></div>
+      <div id="headline"><span class="rule"></span><span class="ln one"></span><span class="ln two"></span></div>
+    </div>
+
+    <script>
+      const CHUNKS = window.__CHUNKS;
+      const DUR = {{DURATION}};
+      const HEADLINE = ["{{HEADLINE_1}}", "{{HEADLINE_2}}"];
+      const HL_IN = [{{HL_IN_1}}, {{HL_IN_2}}];   // inicio del tipeo de cada línea (= SFX de teclas)
+      const HL_OUT = {{HL_OUT}};         // sale justo antes del corte a las cartas
+
+      const cssNum = (n, d) => { const v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue(n)); return Number.isFinite(v) ? v : d; };
+      const CAP = cssNum("--cap-size", 42), CAP_MIN = cssNum("--cap-min", 32), CAP_W = cssNum("--cap-max-w", 860);
+
+      // ----- subtítulos -----
+      const layer = document.getElementById("cap-layer");
+      CHUNKS.forEach((c, i) => {
+        const el = document.createElement("div"); el.className = "cw"; el.id = "cw-" + i;
+        const sp = document.createElement("span"); sp.style.fontSize = CAP + "px";
+        c.w.forEach(([t], k) => { const wd = document.createElement("span"); wd.className = "wd"; wd.id = "wd-" + i + "-" + k; wd.textContent = t; sp.appendChild(wd); if (k < c.w.length - 1) sp.appendChild(document.createTextNode(" ")); });
+        el.appendChild(sp); layer.appendChild(el);
+      });
+      function refit() {
+        CHUNKS.forEach((c, i) => {
+          const sp = document.getElementById("cw-" + i).firstChild; let s = CAP, g = 0;
+          while (sp.getBoundingClientRect().width > CAP_W && s > CAP_MIN && g++ < 30) { s -= 1; sp.style.fontSize = s + "px"; }
+          if (sp.getBoundingClientRect().width > CAP_W) console.warn("[caption-fit] no entra: " + c.t);
+        });
+      }
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(refit); else addEventListener("load", refit);
+
+      // ----- headline: letras tipeadas -----
+      const lines = document.querySelectorAll("#headline .ln");
+      const chars = [[], []];
+      HEADLINE.forEach((txt, li) => {
+        [...txt].forEach((ch) => {
+          const s = document.createElement("span");
+          if (ch === " ") s.className = "sp"; else { s.className = "ch"; s.textContent = ch; chars[li].push(s); }
+          lines[li].appendChild(s);
+        });
+      });
+
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      tl.set("#headline", { opacity: 1 }, 0);
+      tl.fromTo("#veil-top", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power1.out" }, 0.1);
+      tl.fromTo("#headline .rule", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power2.out" }, 0.2);
+      chars.forEach((arr, li) => {
+        arr.forEach((s, k) => tl.fromTo(s, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.14, ease: "power1.out" }, HL_IN[li] + k * 0.04));
+      });
+      tl.to("#headline", { opacity: 0, y: -12, duration: 0.3, ease: "power1.in" }, HL_OUT);
+      tl.to("#veil-top", { opacity: 0, duration: 0.45, ease: "power1.inOut" }, HL_OUT - 0.1);
+
+      // subtítulos: corte seco
+      CHUNKS.forEach((c, i) => {
+        const el = document.getElementById("cw-" + i);
+        tl.set(el, { visibility: "visible", opacity: 1 }, c.show);
+        tl.set(el, { visibility: "hidden", opacity: 0 }, c.hide);
+      });
+      // contorno que sigue la lectura: la palabra activa se perfila en dorado, las demás quedan con el contorno oscuro
+      const STROKE_OFF = "rgba(0,0,0,0.9)", STROKE_ON = "#FFC83D";
+      CHUNKS.forEach((c, i) => c.w.forEach(([t, s0, e0], k) => {
+        const el = document.getElementById("wd-" + i + "-" + k);
+        tl.set(el, { webkitTextStrokeColor: STROKE_ON }, Math.max(c.show, s0 - 0.03));
+        tl.set(el, { webkitTextStrokeColor: STROKE_OFF }, k < c.w.length - 1 ? Math.max(c.show, c.w[k + 1][1] - 0.03) : c.hide);
+      }));
+      window.__timelines["main"] = tl;
+
+      // lint: nunca dos frases a la vez
+      CHUNKS.forEach((c, i) => { const n = CHUNKS[i + 1]; if (n && c.hide - n.show > 0.001) console.warn("[caption-lint] overlap " + i); });
+      tl.seek(0);
+    </script>
+  </body>
+</html>

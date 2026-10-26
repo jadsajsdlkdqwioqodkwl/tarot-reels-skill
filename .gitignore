@@ -1,0 +1,9 @@
+*.mp4
+*.mp3
+*.wav
+*.m4a
+_work/
+renders/
+node_modules/
+brand.css
+.env
