@@ -45,7 +45,7 @@ Preguntar solo lo que no esté en `brand.json`:
 ```
 📋 Brief rápido para este reel
 
-1. ¿Qué querés comunicar? (producto, oferta, dolor a resolver): ___
+1. ¿Qué quieres comunicar? (producto, oferta, dolor a resolver): ___
 2. Tono de este reel: [místico / empoderador / íntimo / urgente]
    (default: el de brand.json si existe)
 3. CTA de este reel: ___

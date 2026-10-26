@@ -390,19 +390,19 @@ ls -1 outputs/beats/*.mp4 | sort -t_ -k2 -n > /tmp/clips_ordered.txt
 sed -i 's/^/file /' /tmp/clips_ordered.txt
 
 # Concatenar (sin re-encodear si los codecs son iguales)
-ffmpeg -f concat -safe 0 -i /tmp/clips_ordered.txt -c copy outputs/reel_raw.mp4
+ffmpeg -f concat -safe 0 -i /tmp/clips_ordered.txt -c copy outputs/reel-[slug]-A-raw.mp4
 
 # Si hay error de codec: re-encodear
 ffmpeg -f concat -safe 0 -i /tmp/clips_ordered.txt \
   -vf "scale=1080:1920" -c:v libx264 -preset fast -crf 18 \
-  outputs/reel_raw.mp4
+  outputs/reel-[slug]-A-raw.mp4
 ```
 
 **Handoff al skill `reels-editor`:**
 
 ```
-Video raw listo en: outputs/reel_raw.mp4
-Audio de Beatra en: outputs/audio/[archivo].mp3
+Video raw listo en: outputs/reel-[slug]-A-raw.mp4
+Audio de Beatra en: outputs/audio/reel-[slug]-A.mp3
 
 Invocar skill reels-editor con:
 - video_input: outputs/reel_raw.mp4

@@ -8,7 +8,7 @@ version: 1.0.0
 
 # Editor de reels — pipeline de edición
 
-Sos el editor de video de esta marca. Este pipeline está probado de punta a punta en
+Eres el editor de video de esta marca. Este pipeline está probado de punta a punta en
 reels reales publicados (clips de iPhone → reel de 60-170s, sincro verificada frame a
 frame). **Lo que el usuario pide en el prompt manda** (ver §Precedencia): los criterios de
 estilo de abajo son defaults, no leyes; solo los invariantes de calidad se mantienen siempre.
@@ -81,10 +81,10 @@ tamaños, paleta de SFX. Donde más abajo diga CERRADO / PROHIBIDO / REGLA PERMA
 
 ## Assets externos: fetch-asset
 
-Cuando falte B-roll, foto o música que no esté en `assets/`, buscalo con `node ~/.claude/skills/reels-editor/scripts/fetch-asset.mjs search <pixabay|pexels|archive|openverse> <video|photo|audio> "<query>" --proj "$PROJ"`: la query va SIEMPRE en inglés (en español devuelve 0 resultados).
-Elegí uno de los 5 candidatos y bajalo con `get <fuente> <id>`: queda en `assets/fetched/`, baja la mejor resolución disponible (con tope de 40 MB; `--max-mb N`) y hay que informar al usuario cuál bajó.
+Cuando falte B-roll, foto o música que no esté en `assets/`, búscalo con `node ~/.claude/skills/reels-editor/scripts/fetch-asset.mjs search <pixabay|pexels|archive|openverse> <video|photo|audio> "<query>" --proj "$PROJ"`: la query va SIEMPRE en inglés (en español devuelve 0 resultados).
+Elige uno de los 5 candidatos y bájalo con `get <fuente> <id>`: queda en `assets/fetched/`, baja la mejor resolución disponible (con tope de 40 MB; `--max-mb N`) y hay que informar al usuario cuál bajó.
 Cada descarga añade una línea a `assets/LICENSES.tsv`: **ningún asset bajado con `fetch-asset` se usa si no tiene su línea ahí**. Solo pasan CC0, public domain, Pixabay Content License y Pexels License; el script rechaza NC, SA, CC-BY y unknown, y eso no se evita.
-Pexels es opcional (emisión de claves pausada): sin `PEXELS_API_KEY` se salta solo; `PIXABAY_API_KEY` es la que cuenta. Las búsquedas de Pixabay se cachean 24 h (lo exige su API). Si una fuente falla o da 0 resultados, se lo decís al usuario; no cambies de fuente en silencio.
+Pexels es opcional (emisión de claves pausada): sin `PEXELS_API_KEY` se salta solo; `PIXABAY_API_KEY` es la que cuenta. Las búsquedas de Pixabay se cachean 24 h (lo exige su API). Si una fuente falla o da 0 resultados, se lo dices al usuario; no cambies de fuente en silencio.
 **Ideas abstractas** ("decisión difícil", "universo", "duda"): no buscar el concepto; buscar una **metáfora visual literal** en inglés ("crossroads path", "night sky stars", "person standing at fork in road"). Si no hay un resultado bueno, usar una **tarjeta de texto o motion graphic** en vez de un stock flojo (en la prueba de voz, "decisión difícil" salió como una ilustración animada de otro estilo).
 `assets/LICENSES.tsv` es solo para lo bajado con `fetch-asset`; la biblioteca local (`assets/music`, `assets/sfx`) ya queda cubierta por sus `manifest.tsv` y no necesita línea ahí.
 SFX: no hay búsqueda; usar la biblioteca Mixkit de `assets/sfx` (95). Pixabay audio no está soportado (su API oficial solo cubre imágenes y video).
@@ -109,10 +109,10 @@ Los videos de Pixabay/Pexels **no traen audio**: van como cutaway `<video muted>
 
 ## PASO 0 — Configuración de marca (solo la primera vez del proyecto)
 
-**Antes de tocar un solo clip, verificá si existe `brand.json` en la raíz del proyecto.**
+**Antes de tocar un solo clip, verifica si existe `brand.json` en la raíz del proyecto.**
 
-- **Existe** → leelo y usá esos valores. No vuelvas a preguntar nada de marca.
-- **No existe** → hacé la entrevista corta de `reference/brand-setup.md` (5 preguntas;
+- **Existe** → léelo y usa esos valores. No vuelvas a preguntar nada de marca.
+- **No existe** → haz la entrevista corta de `reference/brand-setup.md` (5 preguntas;
   la única sin default es el color de marca) y corré `scripts/setup-brand.mjs` con las
   respuestas. Recién ahí arranca el reel.
 

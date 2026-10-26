@@ -42,7 +42,7 @@ ls brand.json 2>/dev/null && echo "EXISTS" || echo "NOT FOUND"
 📋 Cuéntame sobre tu negocio
 
 1. Nombre del negocio / marca: ___
-2. Qué vendés / qué hacés (en 1 oración): ___
+2. Qué vendes / qué haces (en 1 oración): ___
 3. País y ciudad (para referencia cultural): ___
 4. URL o redes donde están: ___
 ```
@@ -50,7 +50,7 @@ ls brand.json 2>/dev/null && echo "EXISTS" || echo "NOT FOUND"
 ### Bloque 2 — Audiencia
 
 ```
-👥 ¿A quién le hablás?
+👥 ¿A quién le hablas?
 
 5. Edad del cliente ideal: ___
 6. Género (si es relevante): ___
@@ -84,8 +84,8 @@ ls brand.json 2>/dev/null && echo "EXISTS" || echo "NOT FOUND"
 ### Bloque 5 — Personaje (opcional pero recomendado)
 
 ```
-🧑 ¿Querés un personaje AI fijo para los reels?
-(Si decís que no, cada reel puede tener un look diferente)
+🧑 ¿Quieres un personaje AI fijo para los reels?
+(Si dices que no, cada reel puede tener un look diferente)
 
 18. ¿Usar personaje fijo? [sí / no]
 
@@ -95,7 +95,7 @@ Si sí:
 21. Rasgos físicos (cabello, ojos, tono de piel, rasgos específicos): ___
 22. Vestimenta / estética: ___
 23. Ambiente / mundo visual donde aparece: ___
-24. ¿Ya tenés imágenes de referencia? [sí → ruta / no → generar desde cero]
+24. ¿Ya tienes imágenes de referencia? [sí → ruta / no → generar desde cero]
 ```
 
 **Pedir solo lo que no tenga respuesta obvia.** Si el usuario ya dijo algo relevante en el prompt, no volver a preguntar.
@@ -176,7 +176,7 @@ Todas están en Google Fonts y son gratuitas.
 
 ## Sugerencias de color si no tiene marca definida
 
-Preguntar: "¿Querés que sugiera una paleta basada en el tono?"
+Preguntar: "¿Quieres que sugiera una paleta basada en el tono?"
 
 | Tono | Acento sugerido | Fondo sugerido |
 |------|----------------|----------------|
