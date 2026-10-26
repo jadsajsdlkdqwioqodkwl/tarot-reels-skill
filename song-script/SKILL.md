@@ -25,24 +25,51 @@ Produce:
 
 ## Paso 0 — Capturar el brief (SIEMPRE preguntar primero)
 
-Antes de escribir una sola línea, recopilar:
+### 0a — Leer brand.json si existe
 
-```
-📋 Brief para la historia cantada
-
-1. Producto / servicio: ___
-2. Avatar (cliente ideal en 1 oración): ___
-3. Principal dolor del avatar: ___
-4. Promesa clave / transformación: ___
-5. CTA deseado (texto exacto si lo tienen): ___
-6. Tono: [místico / empoderador / urgente / íntimo / divertido / otro: ___]
-7. Duración objetivo: [corto 25–35 s / largo 45–60 s]
-8. Género musical: [pop / trap / cumbia / reggaeton / electrónico / balada / otro: ___]
-9. Idioma y dialecto: [español neutro / peruano / mexicano / otro: ___]
+```bash
+cat brand.json 2>/dev/null || echo "NO BRAND FILE"
 ```
 
-**No escribir el guión hasta recibir respuestas a los puntos 1–5 como mínimo.**
-Los puntos 6–9 tienen defaults si el usuario no los especifica.
+Si existe: los campos `brandName`, `audience.pain`, `audience.transformation`, `tone`, `cta`, `dialect` son los defaults del brief. **No volver a preguntar lo que ya está ahí.**
+
+### 0b — Selector de personaje
+
+Leer `brand.json → characters[]`. Mostrar siempre:
+
+```
+🎭 ¿Qué personaje protagoniza este reel?
+
+[si hay personajes guardados]:
+  a) Luna — mujer mística 28-35 (✅ disponible)
+  b) Nuevo perfil — describir ahora
+  c) Sin personaje — voz en off / texto solo
+
+[si no hay ninguno]:
+  a) Crear personaje ahora (nombre, género/edad, estética en 2 líneas)
+  b) Sin personaje — solo voz y texto
+```
+
+El personaje elegido va al **BRIEF DE PERSONAJE** del output para que `video-gen` lo reciba directamente.
+
+### 0c — Brief del reel
+
+Preguntar solo lo que brand.json no responde:
+
+```
+📋 Brief para este reel
+(Los campos con ✓ vienen de brand.json — solo confirmalos o cambialos)
+
+1. ¿Qué comunicamos en este reel?: ___
+   (puede ser una oferta puntual, un dolor específico, una temporada)
+2. Tono ✓ [el de brand.json]: ¿mismo o cambiar?
+3. CTA ✓ [el de brand.json]: ¿mismo o cambiar?
+4. Duración: [corto 25–35 s / largo 45–60 s]  (default: corto)
+5. Género musical: [pop / trap / cumbia / reggaeton / electrónico / balada / otro]
+6. ¿Variante A/B? [solo A / sí, generar hook alternativo para B]
+```
+
+**No escribir el guión hasta tener respuesta al punto 1.**
 
 ---
 
@@ -217,17 +244,32 @@ Paleta de colores: ___
 Después de entregar el guión, mostrar siempre:
 
 ```
-📝 Guión listo — confirmá antes de continuar
+📝 Guión A listo — confirmá antes de continuar
 
 Palabras totales en letra: [N]
 Duración estimada cantada a [BPM] BPM: [X]s ✅ / ⚠️ ajustar
 
 ¿Qué querés hacer?
-a) Aprobar y generar audio con Beatra
-b) Aprobar y generar video con video-gen
-c) Editar beat [número] — decime qué cambiar
-d) Reescribir completo con otra dirección
-e) Ver 2 versiones alternativas del Hook
+a) Aprobar y continuar al pipeline completo
+b) Editar beat [número] — decime qué cambiar
+c) Reescribir completo con otra dirección
+d) Ver 3 alternativas del Hook (para elegir o para variante B)
+e) Generar variante B ahora (hook + agitation distintos, resto igual)
+```
+
+**Si eligió A/B en el brief:** generar automáticamente la variante B junto con la A.
+La variante B siempre usa el mismo guión de Beats 2–9, solo cambia Beat 1 (Hook) y Beat 3 (Agitation).
+
+Mostrar ambas en paralelo para comparar:
+
+```
+━━━━━━━━━━━━━━━━  VARIANTE A  ━━━━━━━━━━━━━━━━
+BEAT 1 — HOOK: "[hook A]"
+BEAT 3 — AGITATION: "[agitation A]"
+
+━━━━━━━━━━━━━━━━  VARIANTE B  ━━━━━━━━━━━━━━━━
+BEAT 1 — HOOK: "[hook B — más directo/más curioso]"
+BEAT 3 — AGITATION: "[formulación diferente del mismo dolor]"
 ```
 
 **No avanzar hasta recibir respuesta.** Esta gate es independiente de la confirmación de costo de generación de video.

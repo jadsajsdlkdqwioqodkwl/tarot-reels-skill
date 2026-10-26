@@ -50,12 +50,34 @@ Reels siguientes (misma personaje):                              ~$1.26
 
 ---
 
+## SELECTOR DE PERSONAJE (ejecutar SIEMPRE al inicio)
+
+Leer `brand.json → characters[]`. Si el array tiene entradas, mostrar:
+
+```
+🎭 ¿Qué personaje usamos en este reel?
+
+[listar cada entrada del array]:
+  a) Luna — mujer 28-35, mística (✅ sheet listo / ⚠️ sheet pendiente)
+  b) Crear nuevo personaje para este reel
+  c) Sin personaje — solo ambientes y texto en pantalla
+
+Si hay variante B: ¿mismo personaje o diferente para B?
+```
+
+- **Personaje con `sheetReady: true`** → saltar Pasos 1a y 1b, ir directo a Paso 1c (QA) y luego Fase 2
+- **Personaje con `sheetReady: false`** → ejecutar Pasos 1a + 1b, luego marcar `sheetReady: true` en `brand.json`
+- **Nuevo personaje** → preguntar los 5 datos (nombre, género/edad, cabello, rasgos, vestimenta/mundo), ejecutar 1a + 1b, luego agregar al array de `brand.json` con `sheetReady: true`
+- **Sin personaje** → ir directo a Fase 2 con prompts de ambiente/texto (sin `element_reference_images`)
+
+---
+
 ## FASE 1 — Character Sheet (Identity Lock)
 
 ### Cuándo ejecutar esta fase
-- **Primera vez** con este personaje → ejecutar completo (Pasos 1a + 1b)
-- **Personaje ya existe** en `references/characters/` → saltar al Paso 1c
-- Verificar existencia: `ls references/characters/`
+- **Primera vez** con este personaje (`sheetReady: false` o nuevo) → ejecutar completo (Pasos 1a + 1b)
+- **Personaje ya existe** (`sheetReady: true`) → saltar al Paso 1c
+- Verificar existencia física: `ls references/characters/`
 
 ### Paso 1a — Generar hero portrait
 

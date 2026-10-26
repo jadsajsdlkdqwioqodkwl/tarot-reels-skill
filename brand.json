@@ -1,7 +1,9 @@
 {
   "brandName": "Tarot para Principiantes",
+  "tagline": "Aprende tarot desde cero y transforma tu intuición en certeza",
   "language": "es",
   "dialect": "neutro",
+  "country": "PE",
   "colors": {
     "accent": "#FFC83D",
     "dark": "#1A0B2E"
@@ -11,10 +13,28 @@
   },
   "ratio": "4:5",
   "motion": "medium",
-  "character": {
-    "name": "Luna",
-    "description": "Mujer latina 28-35 años aparentes, ojos oscuros y mirada intensa, cabello largo oscuro con mechones dorados, vestimenta: túnica morada con detalles dorados, joyería étnica con cristales",
-    "world": "Interior místico: velas, cristales, tela de terciopelo morado, humo dorado, cartas del tarot iluminadas, luz de luna suave",
-    "sheet_path": "references/characters/luna/"
-  }
+  "tone": "místico",
+  "cta": "Empieza gratis — link en bio",
+  "audience": {
+    "ageRange": "25-45",
+    "gender": "mixto",
+    "pain": "No sé qué decisión tomar y siento que no tengo guía",
+    "transformation": "Leer el tarot con confianza y tomar decisiones con claridad",
+    "voice": "Buscan señales, hablan de energías, intuición, el universo"
+  },
+  "characters": [
+    {
+      "id": "luna",
+      "name": "Luna",
+      "ageApparent": "28-35",
+      "gender": "femenino",
+      "hair": "cabello largo oscuro con mechones dorados, ondulado",
+      "eyes": "oscuros, mirada intensa y serena",
+      "skin": "tono oliva, piel visible con textura natural",
+      "outfit": "túnica morada con detalles dorados, joyería étnica con cristales",
+      "world": "interior místico: velas encendidas, cristales sobre terciopelo morado, humo dorado suave, cartas del tarot iluminadas, luz de luna suave filtrada",
+      "sheetPath": "references/characters/luna-oscuro-dorado-oliva/",
+      "sheetReady": false
+    }
+  ]
 }
