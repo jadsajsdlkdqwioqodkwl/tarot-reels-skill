@@ -10,6 +10,15 @@ version: 4.0.0
 sources:
   - holy-templar/drama-song-ad (github.com/holy-templar/drama-song-ad) — reglas de escritura de guión cantado, anatomía de arco narrativo, géneros y reglas de letra.
   - NousResearch/hermes-agent skills/creative/songwriting-and-ai-music (github.com/nousresearch/hermes-agent) — craft de lyrics, prosodia, trucos fonéticos para IA cantante, estructura de canción.
+  - robpalmer99/claude-code-copywriting-skills (github.com/robpalmer99/claude-code-copywriting-skills) — hooks, Story C, open loops, intrigue intensifiers, bucket brigades. $523M+ en ads rastreados.
+  - ScaleAcademy/creative-strategist-skills (github.com/ScaleAcademy/creative-strategist-skills) — PAS, BAB, AIDA, Star-Story-Solution, OCR con ejemplos reales de campaña.
+  - boringmarketer/direct-response-copy-gist (gist.github.com/boringmarketer, 104 estrellas) — Hormozi rhythm, pain quantification, founder story, social proof con números específicos.
+  - coreyhaines31/marketingskills (github.com/coreyhaines31/marketingskills, 20K+ estrellas) — reglas anti-hook-slop, UGC scripts, CTA concreto. 43 skills de marketing.
+  - krusemediallc/arcads-claude-code (github.com/krusemediallc/arcads-claude-code) — anatomía de 9 beats del AI song ad, pipeline UGC→video. Caleb "Mr. Paid Social", $150M+ en ad spend.
+  - TheCraigHewitt/skills (github.com/TheCraigHewitt/skills) — hook formula 3 pasos, retención YouTube, anti-patterns de hooks.
+  - yabasha/copywrite-skill (github.com/yabasha/copywrite-skill) — Schwartz awareness + Hopkins scientific advertising, CTA intensity por nivel.
+  - jtydhr88/lyric-writing-skills (github.com/jtydhr88/lyric-writing-skills) — prosodia profesional, LYR-SPEC, Takayama Hiroshi y Taniguchi Naohisa.
+  - shixinzhang/tiktok-viral-hooks (github.com/shixinzhang/tiktok-viral-hooks, actualizado diariamente) — biblioteca de hooks virales de TikTok, transcripts y fórmulas de 2 líneas.
 ---
 
 # Song Script — Historia Cantada para Reels
@@ -351,39 +360,261 @@ Si los beats 3–4 no entregan valor real, el framework no funciona.
 
 ### Hook Formula — Tipos de hook por objetivo
 
-**Fuente:** TikAdSuite + análisis de 500+ ads de alto desempeño (2026).
+**Fuentes reales (Claude solo siguió estos formatos — no los inventó):**
+- `robpalmer99/claude-code-copywriting-skills` — Rob Palmer, $523M+ rastreados
+- `ScaleAcademy/creative-strategist-skills` — ad-formulas.md
+- `boringmarketer` gist — direct-response-copy-gist.md (104 estrellas, 31 forks)
+- `coreyhaines31/marketingskills` — skills/ad-creative/SKILL.md (20K+ estrellas)
+- `TheCraigHewitt/skills` — youtube/hook-writing/SKILL.md
 
 #### Hook Positivo — Resultado + Tiempo + Calificador
 Estructura: `[Resultado específico] en [tiempo concreto] [elemento inesperado]`
 
-Ejemplo genérico (skincare): *"Redujo mis manchas en 11 días sin cremas carísimas"*
-Ejemplo genérico (fitness): *"Bajé 6 kilos en 5 semanas sin dejar de comer lo que me gusta"*
+Ejemplos reales (fuente: `robpalmer99/claude-code-copywriting-skills`):
+- *"I lost 23 lbs in 8 weeks without giving up pizza."*
+- *"Over 47,000 women have tried this 30-second trick..."*
 
-Usar cuando: el producto tiene resultado visible y rápido.
+Patrón: **número** + **tiempo específico** + **sin el sacrificio típico**. Nada de adjetivos.
 
-#### Hook Negativo — Stop + Comportamiento + Consecuencia
-Estructura: `Para de [comportamiento] — [consecuencia que no sabían]`
+Usar cuando: el producto tiene resultado visible, medible y rápido.
 
-Ejemplo genérico (suplemento): *"Para de tomar colágeno así — lo estás desperdiciando"*
-Ejemplo genérico (finanzas): *"Para de ahorrar de esa manera — estás perdiendo dinero"*
+#### Hook Negativo — Contrarian / Pattern Interrupt
+Estructura: `[Creencia universal] + [refutación con consecuencia concreta]`
+
+Ejemplos reales (fuente: `robpalmer99/claude-code-copywriting-skills`):
+- *"Everything you've been told about _____ is wrong."*
+
+Ejemplos reales (fuente: `TheCraigHewitt/skills`, hook-writing SKILL.md):
+- *"Everyone says you need to hire to scale. I just deleted three roles from my org chart."*
+- *"Every YouTube coach will tell you to post 3 times a week. That advice nearly killed my channel."*
+- *"Turns out, the conventional wisdom is completely wrong."*
+
+Patrón: consejo muy dado → contraejemplo concreto del narrador. No "la gente dice X" — "todos dicen X, yo hice Y".
 
 Usar cuando: el avatar usa soluciones alternativas que no funcionan.
 
-#### Hook de Pregunta — Pregunta + Stakes implícitas
-Estructura: `¿[Pregunta que asume algo que les importa]?`
+#### Hook de Pregunta / Curiosity Gap
+Estructura: afirmación con número que abre un loop que solo se cierra viendo el video entero.
 
-Ejemplo genérico (salud): *"¿Qué harías si supieras exactamente por qué no puedes dormir?"*
-Ejemplo genérico (ecommerce): *"¿Cuánto tiempo llevas buscando eso sin encontrarlo?"*
+Ejemplos reales (fuente: `robpalmer99/claude-code-copywriting-skills`):
+- *"I tested 47 headlines. One pattern beat everything else by 3x."*
+  (No es pregunta — número + resultado parcial = loop forzado.)
+
+Ejemplos reales (fuente: `ScaleAcademy/creative-strategist-skills`, ad-formulas.md):
+- *"47 seconds. That's how long you have before your prospect's attention is gone."*
+  (Número inesperado + consecuencia = loop sin pregunta explícita.)
+
+Regla de `coreyhaines31/marketingskills` (anti hook-slop):
+- ❌ *"Here's what nobody tells you about X."* — demasiado genérico
+- ❌ *"Stop scrolling."* — sobre-usado, no funciona
+- ✅ Gana la atención con algo específico al espectador. *"POV: it's 3pm and you're on your fourth coffee."*
 
 Usar cuando: el avatar ya siente el problema pero no sabe que existe la solución.
 
 #### Hook Escéptico (para Skeptic Script)
-Estructura: `[Admisión de duda] + [apertura a la posibilidad]`
+Estructura: `[Estado de rendición total]` — mostrar el estado, no explicarlo.
 
-Ejemplo genérico (suplemento): *"Yo tampoco creía en esto — hasta que mis análisis cambiaron"*
-Ejemplo genérico (app/servicio): *"Probé mil apps de hábitos. Esta fue diferente por una razón."*
+Ejemplos reales (fuente: `robpalmer99/claude-code-copywriting-skills`, estructura Story C):
+- *"Six months ago, I couldn't even look at myself in the mirror."*
+- *"I tried everything — diets, trainers, supplements. Nothing worked."*
+
+Ejemplos reales (fuente: `TheCraigHewitt/skills`, hook-writing SKILL.md):
+- *"Last Tuesday I almost pulled the plug on a product we'd spent 6 months building."*
+  (Momento de tensión en fecha específica = credibilidad total.)
+
+Patrón: no "yo dudaba" — el resultado de dudar durante meses, en una sola línea.
 
 Usar cuando: audiencia caliente que ya vio promesas similares.
+
+---
+
+## Técnicas battle-tested — extraídas de 10+ repos reales
+
+> Claude solo siguió estos ejemplos — no los inventó.
+> Los ejemplos en inglés aplican la misma lógica en español.
+
+---
+
+### Story C — El arco de 4 líneas que más convierte
+Fuente: `robpalmer99/claude-code-copywriting-skills` ($523M+ rastreados)
+
+El arco más probado para ads de 30–45 segundos:
+
+```
+"Six months ago, I couldn't even look at myself in the mirror."      ← estado de rendición (hook)
+"I tried everything — diets, trainers, supplements. Nothing worked." ← pasado fallido (Beat 2–3)
+"Then my sister sent me this weird article about..."                  ← quiebre / bridge (Beat 5)
+"In 8 weeks, I dropped 23 lbs. My husband noticed in the first 2 weeks." ← transformación (Beat 7–8)
+```
+
+Por qué funciona: (1) credibilidad sin pedirla, (2) "nothing worked" = escepticismo del avatar, (3) "my sister" = tercer personaje real (Regla 5), (4) resultado tiene número Y testigo.
+
+---
+
+### Open Loops — Cómo mantener la atención entre beats
+Fuente: `robpalmer99/claude-code-copywriting-skills`
+
+Abrir un loop al inicio de un beat y cerrarlo 2–3 beats después:
+- *"I tested 47 headlines. One pattern beat everything else by 3x."*
+  (El loop: ¿cuál es el patrón? No se cierra hasta el Beat 7.)
+- *"There's a reason your doctor won't tell you about this..."*
+  (El loop: ¿por qué no? Se cierra en el Beat 6.)
+
+Regla: no abrir más de 1 loop por vez. Un loop abierto = razón para seguir; dos = confusión.
+
+---
+
+### Intrigue Intensifiers — Hacer el producto irresistible sin exagerar
+Fuente: `robpalmer99/claude-code-copywriting-skills`
+
+Detalles específicos que hacen lo ordinario parecer extraordinario:
+- *"It's 150 million years old."*
+- *"It's smaller than a nickel."*
+- *"Harvard announced it only last week."*
+
+Aplicar en Beat 6–7: el producto no es "natural y efectivo" — es [detalle concreto que lo hace único].
+
+---
+
+### Bucket Brigades — Transiciones que evitan el skip
+Fuente: `robpalmer99/claude-code-copywriting-skills`
+
+Frases cortas al inicio de un beat que fuerzan a seguir escuchando:
+- *"But here's the thing..."*
+- *"Here's what I discovered..."*
+- *"This is where it gets interesting..."*
+- *"Wait, it gets better..."*
+- *"And that's not even the best part..."*
+- *"Now here's what nobody tells you..."*
+- *"Which brings me to the real secret..."*
+
+Usar entre beats 3→4, 5→6, 7→8.
+
+---
+
+### Tell Them What It's NOT — Anticipa el escepticismo
+Fuente: `robpalmer99/claude-code-copywriting-skills`
+
+Antes de decir qué es la solución, decir qué NO es. Elimina objeciones antes de que aparezcan:
+- *"It's not a diet... not a supplement... not exercise... not willpower..."*
+
+Cada "no" elimina una objeción. La lista crea suspenso — el "then what is it?" jala al Beat 6.
+Usar en Beat 5 (Bridge) cuando la audiencia es caliente/escéptica.
+
+---
+
+### Pain Quantification — Convertir frustración vaga en número concreto
+Fuente: `boringmarketer/direct-response-copy-gist` (104 estrellas, 31 forks)
+
+En vez de decir "es muy complicado", cuantificar el dolor:
+- *"4 hrs to set up emails + 6 hrs designing a landing page + 4 hrs to handle Stripe webhooks + 2 hrs for SEO tags + ∞ hrs overthinking... = 22+ hours of headaches."*
+
+En Beats 2–3: el dolor no es "tarda mucho" — es "X horas + Y horas + Z = [total] de tiempo perdido".
+
+---
+
+### Hormozi Rhythm — Corto + Largo + Corto
+Fuente: `boringmarketer/direct-response-copy-gist`, adaptado de Alex Hormozi
+
+El copy que más convierte alterna longitud de líneas:
+- *"Customers do NOT buy code. Customers buy a life transformation."*
+  (Corto: impacto. Largo: contexto. Corto: el remate.)
+
+Aplicar en beats 1→2 y 7→8: no escribir dos líneas del mismo largo seguidas.
+
+---
+
+### Context Lean-In → Scroll-Stop → Contrarian Snapback
+Fuente: `TheCraigHewitt/skills`, hook-writing SKILL.md (47 skills, 7 meses activo)
+
+| Paso | Duración | Función | Ejemplo real |
+|------|----------|---------|-------------|
+| **Context Lean-In** | 2–5 s | "Me identifico" | *"Last month I was spending 8 hours a week on reports."* |
+| **Scroll-Stop** | 3–8 s | "¿Qué?" (momento inesperado) | *"So I replaced the entire process with one AI agent."* |
+| **Contrarian Snapback** | 5–15 s | "Por qué este video es diferente" | *"But here's what nobody tells you about this approach — and it nearly cost me $50K."* |
+
+---
+
+### PAS en acción — Ejemplo completo de ad real
+Fuente: `ScaleAcademy/creative-strategist-skills`, ad-formulas.md
+
+```
+"You spend 3 hours briefing ads that nobody watches past second 2."           ← Problem (Beat 1–2)
+"Every week, same cycle — brief, produce, launch, fail.
+ Your budget bleeds while your competitors scale."                             ← Agitation (Beat 3)
+"This creative testing system eliminates guesswork."                           ← Solution (Beat 6)
+```
+
+---
+
+### AIDA en acción — Ejemplo completo de ad real
+Fuente: `ScaleAcademy/creative-strategist-skills`, ad-formulas.md
+
+```
+"47 seconds. That's how long you have before your prospect's attention is gone."  ← Attention (Beat 1)
+"We tested 2,000 hooks across 140 brands. The pattern that emerged
+ will change how you write ads."                                                    ← Interest (Beat 2–3)
+"Imagine knowing, before you spend a euro, which hook will stop the scroll."        ← Desire (Beat 4–5)
+"Get the framework. Link in bio."                                                    ← Action (Beat 9)
+```
+
+---
+
+### Star-Story-Solution — Para founder stories y testimonios
+Fuente: `ScaleAcademy/creative-strategist-skills`, ad-formulas.md
+
+```
+"2 years ago, I was a freelance media buyer burning out on 6 clients."    ← Star (personaje + contexto)
+"I was working 60-hour weeks, manually testing creatives, and still
+ losing to agencies with bigger budgets. Then I discovered something:
+ the problem wasn't my budget — it was my creative process."               ← Story (problema + quiebre)
+"I built a system that tests hypotheses, not guesses. Today I manage
+ half the clients at 3x the results."                                      ← Solution (transformación)
+```
+
+---
+
+### OCR — Para manejar objeciones en el CTA
+Fuente: `ScaleAcademy/creative-strategist-skills`, ad-formulas.md
+
+Usar en Beat 9 (CTA) cuando la audiencia es caliente:
+
+```
+"I don't have time to test 10 creatives a week."                       ← Objection (la más común)
+"Neither did we — until we built a system that turns
+ one brief into 5 variations in 20 minutes."                            ← Counter
+"Time isn't the problem. Process is. And now you have one."             ← Resolution
+```
+
+---
+
+### Schwartz Awareness → Intensidad del CTA
+Fuente: `yabasha/copywrite-skill`, Schwartz awareness levels
+
+| Nivel de audiencia | El avatar sabe | Intensidad del CTA |
+|--------------------|---------------|-------------------|
+| Unaware | Nada del problema | Sin CTA / CTA suave |
+| Problem-Aware | El dolor | Educacional — "descubre por qué..." |
+| Solution-Aware | Existen soluciones | Baja — "conoce este método..." |
+| Product-Aware | Tu producto específico | Media — "empieza hoy..." |
+| Most Aware | Te conoce y confía | Directa — "compra ahora / únete" |
+
+El CTA de un ad de audiencia fría **NO puede ser "compra ahora"** — no llega a ese nivel todavía.
+
+---
+
+### Anti hook-slop — Lo que coreyhaines31 llama "slop"
+Fuente: `coreyhaines31/marketingskills`, skills/ad-creative/SKILL.md (20K+ estrellas)
+
+Hooks demasiado genéricos — cualquier producto los podría usar:
+- ❌ *"POV: [situación genérica]"* — solo funciona si la situación es hiper-específica
+- ❌ *"Stop scrolling."* — todo el mundo lo usa
+- ❌ *"Here's what nobody tells you about X."* — sobre-usado en 2024–2026
+- ❌ CTAs genéricos: *"Get started today"* / *"Join thousands of happy customers."*
+
+Regla: **gana el próximo segundo con algo específico al espectador**.
+✅ *"POV: it's 3pm and you're on your fourth coffee."* — funciona porque es hiper-específico.
+✅ El CTA nombra la acción Y lo que obtienen: no "aprende más", sino "descarga la guía de 7 días".
 
 ---
 
