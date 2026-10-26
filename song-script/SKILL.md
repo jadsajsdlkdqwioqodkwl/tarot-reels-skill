@@ -2,248 +2,273 @@
 name: song-script
 description: >-
   Escribe el guión de una "historia cantada" para reels / anuncios de Meta Ads /
-  TikTok, siguiendo la anatomía de 9 beats de un AI song ad (Hook → Tensión →
-  Resolución → CTA). Optimizado para "Tarot para Principiantes" (Perú) pero
-  adaptable a cualquier marca. Úsalo antes de generar audio con Beatra o video
-  con el skill video-gen.
+  TikTok, siguiendo la anatomía de 9 beats de un AI song ad. Produce letra lista
+  para Beatra y brief de personaje listo para video-gen. Usar antes de generar
+  audio o video.
 compatibility: claude-code
-version: 1.0.0
+version: 2.0.0
 ---
 
 # Song Script — Historia Cantada para Reels
 
 ## Propósito
 
-Este skill produce:
-1. El **guión de 9 beats** de la historia cantada (letra + indicaciones visuales por beat).
-2. Un **brief de personaje** listo para el skill `video-gen` (character sheet).
-3. El **prompt de audio** listo para Beatra (`beatra-ai/lyrics-to-song-skill`).
+Produce:
+1. **Guión de 9 beats** con letra cantada + visual sugerido por beat
+2. **Prompt de audio** para Beatra (`beatra-ai/lyrics-to-song-skill`)
+3. **Brief de personaje** para el skill `video-gen`
+
+> ℹ️ **Sobre el negocio:** No hay información hardcodeada de ningún negocio en esta skill.
+> El usuario proveerá todos los datos de su marca al invocar el skill.
 
 ---
 
-## Anatomía de un AI Song Ad (9 beats)
+## Paso 0 — Capturar el brief (SIEMPRE preguntar primero)
 
-Basado en el infographic "Anatomy of a Great AI Song Ad":
+Antes de escribir una sola línea, recopilar:
 
-| # | Beat | Duración | Función |
-|---|------|----------|---------|
-| 1 | **Hook** | 2–3 s | Captura la atención. Debe parar el scroll. Pregunta o afirmación impactante. |
-| 2 | **Pain / Problema** | 3–4 s | Nombra el dolor del avatar. Empatía inmediata. |
-| 3 | **Agitation** | 2–3 s | Intensifica el dolor. "Y lo peor es que…" |
-| 4 | **Dream** | 2–3 s | Pinta el mundo ideal. Aspiración. |
-| 5 | **Bridge / Transición** | 1–2 s | Conecta el sueño con la solución. |
-| 6 | **Solution** | 3–4 s | Presenta el producto/servicio. El antes vs el después. |
-| 7 | **Proof / Credibilidad** | 2–3 s | Evidencia, resultados, número concreto o testimonio condensado. |
-| 8 | **Transformation** | 2–3 s | El avatar YA tiene la vida soñada gracias a la solución. |
-| 9 | **CTA** | 2–3 s | Invitación directa. Urgencia suave. Link / acción concreta. |
+```
+📋 Brief para la historia cantada
 
-**Duración total objetivo:** 25–35 s para reel (formato corto), hasta 60 s para anuncio largo.
+1. Producto / servicio: ___
+2. Avatar (cliente ideal en 1 oración): ___
+3. Principal dolor del avatar: ___
+4. Promesa clave / transformación: ___
+5. CTA deseado (texto exacto si lo tienen): ___
+6. Tono: [místico / empoderador / urgente / íntimo / divertido / otro: ___]
+7. Duración objetivo: [corto 25–35 s / largo 45–60 s]
+8. Género musical: [pop / trap / cumbia / reggaeton / electrónico / balada / otro: ___]
+9. Idioma y dialecto: [español neutro / peruano / mexicano / otro: ___]
+```
+
+**No escribir el guión hasta recibir respuestas a los puntos 1–5 como mínimo.**
+Los puntos 6–9 tienen defaults si el usuario no los especifica.
 
 ---
 
-## Proceso paso a paso
+## La anatomía de un AI Song Ad — 9 beats
 
-### 1. Brief inicial (pídele al usuario si no lo dio)
+| # | Beat | Duración | Función | Pregunta clave |
+|---|------|----------|---------|----------------|
+| 1 | **Hook** | 2–3 s | Para el scroll. Pregunta o afirmación impactante sin contexto previo | ¿Esto me detiene aunque no sepa nada del producto? |
+| 2 | **Pain** | 3–4 s | Nombra el dolor exacto del avatar. Empatía inmediata | ¿El avatar dice "eso me pasa a mí"? |
+| 3 | **Agitation** | 2–3 s | Intensifica el dolor. "Y lo peor es que…" | ¿Duele más que el beat anterior? |
+| 4 | **Dream** | 2–3 s | El mundo ideal. Lo que el avatar realmente quiere | ¿Se puede visualizar claramente? |
+| 5 | **Bridge** | 1–2 s | Conecta el sueño con la solución. Transición musical | ¿Existe una lógica natural hacia la solución? |
+| 6 | **Solution** | 3–4 s | Presenta el producto/servicio. Antes vs después | ¿Queda claro QUÉ es y QUÉ hace? |
+| 7 | **Proof** | 2–3 s | Evidencia concreta: número, resultado, testimonio comprimido | ¿Hay algo específico, no solo "miles de personas"? |
+| 8 | **Transformation** | 2–3 s | El avatar YA tiene la vida soñada gracias a la solución | ¿Contrasta visiblemente con el Beat 2? |
+| 9 | **CTA** | 2–3 s | Invitación directa con urgencia suave | ¿Dice exactamente qué hacer ahora? |
+
+**Duración total:** 25–35 s (corto) o 45–60 s (largo)
+
+---
+
+## Reglas de letra (battle-tested)
+
+### Lo que funciona
+- **Concreción sobre abstracción:** "no sé si acepto el trabajo" > "la incertidumbre me consume"
+- **Primera persona del avatar:** "No sé qué hacer" > "muchas personas no saben qué hacer"
+- **Imágenes sensoriales:** describe lo que se ve, huele, siente — no solo emociones
+- **Gancho en 3 palabras:** las primeras 3 palabras del Hook deben funcionar solas
+- **Ritmo natural:** cada beat debe poder cantarse en ≤ 4 segundos (~10–14 sílabas a 140 BPM)
+- **Rima cuando fluye:** si la rima se siente forzada, no rimar es mejor
+
+### Lo que destruye el copy
+- ❌ Adjetivos vacíos: "increíble", "asombroso", "transformador", "poderoso"
+- ❌ Clichés de bienestar: "tu mejor versión", "el universo conspira", "energía positiva"
+- ❌ Hablar del producto antes del Beat 5
+- ❌ CTAs genéricos: "no te lo pierdas", "aprovecha esta oportunidad"
+- ❌ Rimas que cambian el significado de la frase para encajar
+
+### Tabla de sílabas por BPM (referencia)
+
+| BPM | Sílabas por beat de 3s | Sílabas por beat de 4s |
+|-----|----------------------|----------------------|
+| 100 | 8–10 | 10–13 |
+| 120 | 10–12 | 13–16 |
+| 140 | 12–14 | 15–19 |
+| 160 | 14–16 | 18–22 |
+
+---
+
+## Fórmulas por tono
+
+### Tono MÍSTICO / ESPIRITUAL
+```
+Hook:       "[Pregunta que asume poderes ocultos o conocimiento vetado]"
+Pain:       "[Sensación de estar perdido/a, sin dirección, en oscuridad]"
+Agitation:  "[Cada decisión equivocada tiene un costo concreto]"
+Dream:      "[Claridad, certeza, saber exactamente qué camino tomar]"
+Bridge:     "[Las respuestas ya existen — solo hay que saber leerlas]"
+Solution:   "[Herramienta/servicio que revela lo que estaba oculto]"
+Proof:      "[Número de personas / resultados concretos obtenidos]"
+Transform.: "[El avatar actúa con confianza, sin dudas]"
+CTA:        "[Verbo de acción + objeto + urgencia temporal suave]"
+```
+
+**Palabras que funcionan en este tono:** revelar, descubrir, claridad, guía, señal, camino, mensaje, universo, respuesta, certeza  
+**Palabras a evitar:** magia, brujería, hechizo, predicción (a menos que el producto lo sea explícitamente)
+
+### Tono EMPODERADOR / TRANSFORMACIÓN
+```
+Hook:       "[Afirmación disruptiva que desafía la narrativa del avatar]"
+Pain:       "[Esfuerzo sin resultados / trabajo duro que no avanza]"
+Agitation:  "[El tiempo pasa y la brecha crece]"
+Dream:      "[Logro específico: número, título, estado]"
+Bridge:     "[La diferencia no es el esfuerzo — es el método]"
+Solution:   "[Sistema / método / herramienta concreta]"
+Proof:      "[Resultado medible con tiempo específico]"
+Transform.: "[El avatar en el estado deseado, haciendo lo que soñaba]"
+CTA:        "[Verbo + promesa de velocidad + acción específica]"
+```
+
+**Palabras que funcionan:** sistema, método, resultado, en X días, comprobado, exactamente, paso a paso  
+**Palabras a evitar:** fácil (suena falso), instantáneo (genera escepticismo), secreto (gastado)
+
+### Tono ÍNTIMO / CONFESIONAL
+```
+Hook:       "[Confesión que el avatar nunca diría en voz alta]"
+Pain:       "[Momento específico de vergüenza, miedo o soledad]"
+Agitation:  "[Nadie lo entiende / lo seguís cargando solo/a]"
+Dream:      "[Ser comprendido/a, ya no tener que esconderlo]"
+Bridge:     "[Hay un lugar / alguien que sí entiende]"
+Solution:   "[Comunidad / servicio / guía que valida la experiencia]"
+Proof:      "[Historia comprimida de alguien similar]"
+Transform.: "[El avatar sintiéndose acompañado y comprendido]"
+CTA:        "[Invitación suave, sin presión, "cuando estés listo/a"]"
+```
+
+**Palabras que funcionan:** solo/a, nadie, por fin, entender, acompañar, cargás, secreto  
+**Palabras a evitar:** comunidad (suena corporativo), apoyo emocional (muy clínico)
+
+### Tono URGENTE / ESCASEZ
+```
+Hook:       "[Dato o realidad que asusta / despierta]"
+Pain:       "[Lo que se está perdiendo mientras espera]"
+Agitation:  "[El costo de no actuar hoy — en términos concretos]"
+Dream:      "[La oportunidad todavía existe... pero no para siempre]"
+Bridge:     "[La ventana está abierta — pero se cierra]"
+Solution:   "[Oferta / acceso / herramienta disponible ahora]"
+Proof:      "[Cuántos ya lo tomaron / quedan X lugares]"
+Transform.: "[Los que actuaron ya tienen resultados]"
+CTA:        "[Verbo de acción + deadline o escasez concreta]"
+```
+
+**Palabras que funcionan:** hoy, solo X lugares, últimas horas, ya, todavía, antes de  
+**Palabras a evitar:** oferta limitada (desgastado), ¡APURATE! (agresivo)
+
+---
+
+## Formato de salida del guión
+
+Usar EXACTAMENTE este formato — el skill `video-gen` lo consume así:
 
 ```
-- Producto / servicio: ___
-- Avatar (cliente ideal): ___  
-- Principal dolor del avatar: ___
-- Promesa clave: ___
-- CTA deseado: ___
-- Tono: [místico / empoderador / urgente / íntimo / otro]
-- Duración objetivo: [corto 25–35 s / largo 45–60 s]
-- Género musical sugerido: [pop / trap / cumbia / electrónico / otro]
-```
-
-Para "Tarot para Principiantes" el brief por defecto es:
-- Avatar: mujer 25–45, Lima y provincias, siente que su vida está "estancada"
-- Dolor: incertidumbre sobre el futuro (amor, trabajo, dinero)
-- Promesa: claridad, guía, respuesta concreta
-- CTA: "Reserva tu lectura hoy"
-- Tono: místico + empoderador
-- Colores de marca: `#FFC83D` (dorado) y `#1A0B2E` (morado oscuro)
-
-### 2. Redactar los 9 beats
-
-Para cada beat, escribe:
-- **Letra cantada** (verso o frase musical, máx 12 palabras por beat corto)
-- **Visual sugerido** (qué se ve en pantalla — descripción para el skill video-gen)
-- **Emoción target** (qué debe sentir el espectador)
-
-**Reglas de letra:**
-- Usa lenguaje coloquial (español neutro con peruanismos sutiles si el tono lo pide)
-- Cada beat debe poder cantarse en ≤ 4 segundos (≈ 10–14 sílabas a 140 BPM)
-- El hook debe funcionar SIN contexto previo — si alguien ve solo las primeras 2 palabras, debe detenerse
-- Evita rimas forzadas que rompan la naturalidad
-- Incluye al menos una imagen concreta (no solo abstracciones)
-
-### 3. Formato de salida
-
-Entrega el guión en este formato exacto (el skill `video-gen` lo consume así):
-
-```
-🎵 HISTORIA CANTADA — [NOMBRE DE LA MARCA]
-Género: [género musical]
-BPM sugerido: [100–160]
+🎵 HISTORIA CANTADA — [NOMBRE DEL NEGOCIO]
+Tono: [tono elegido]
+Género musical: [género]
+BPM sugerido: [número]
 Duración total estimada: [X] s
-Ratio: [9:16 / 4:5]
+Ratio de exportación: [9:16 / 4:5]
 
----
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-BEAT 1 — HOOK
-Letra: "[texto]"
-Visual: [descripción para el prompt de video]
-Emoción: [impacto / curiosidad / shock / etc.]
-Duración: [X]s
+BEAT 1 — HOOK ([X]s)
+Letra: "[texto cantado]"
+Visual: [descripción de qué se ve — para el prompt de video]
+Emoción objetivo: [qué debe sentir el espectador]
+Nota: [razón por la que funciona este hook — o advertencia si hay riesgo]
 
-BEAT 2 — PAIN
-Letra: "[texto]"
+BEAT 2 — PAIN ([X]s)
+Letra: "[texto cantado]"
 Visual: [descripción]
-Emoción: [empatía / reconocimiento]
-Duración: [X]s
+Emoción objetivo: [empatía / reconocimiento]
+Nota: [___]
 
-[... beats 3–8 ...]
+[... beats 3–8 con la misma estructura ...]
 
-BEAT 9 — CTA
-Letra: "[texto]"
-Visual: [descripción — incluye logo/overlay de texto con CTA]
-Emoción: [urgencia suave / esperanza]
-Duración: [X]s
+BEAT 9 — CTA ([X]s)
+Letra: "[texto cantado]"
+Visual: [descripción — DEBE incluir el CTA en pantalla: URL, @usuario, o botón]
+Emoción objetivo: [urgencia suave / esperanza / acción]
+Nota: [___]
 
----
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 LETRA COMPLETA (para Beatra):
-[todos los versos seguidos, con saltos de línea por beat, listos para pegar en Beatra]
+[todos los versos en orden, salto de línea entre beats, sin etiquetas de beat]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 BRIEF DE PERSONAJE (para video-gen):
 Nombre del personaje: ___
-Descripción física: [edad aparente, rasgos, vestimenta, estética]
-Estética de mundo: [ambientación de los clips]
-Paleta visual: #FFC83D, #1A0B2E
+Edad aparente: ___
+Rasgos físicos clave: ___
+Vestimenta / estética: ___
+Ambiente / mundo visual: ___
+Paleta de colores: ___
 ```
 
-### 4. Gate de aprobación (OBLIGATORIO)
+---
 
-Antes de pasar al siguiente skill, muestra el guión completo y pregunta:
+## Gate de aprobación (OBLIGATORIA)
+
+Después de entregar el guión, mostrar siempre:
 
 ```
-📝 Guión listo — revisá antes de continuar
+📝 Guión listo — confirmá antes de continuar
 
-[guión completo]
+Palabras totales en letra: [N]
+Duración estimada cantada a [BPM] BPM: [X]s ✅ / ⚠️ ajustar
 
-¿Aprobás este guión? Opciones:
-a) Sí, generá el audio con Beatra
-b) Sí, generá el video con video-gen
-c) Editar beat [número]
-d) Reescribir desde cero
+¿Qué querés hacer?
+a) Aprobar y generar audio con Beatra
+b) Aprobar y generar video con video-gen
+c) Editar beat [número] — decime qué cambiar
+d) Reescribir completo con otra dirección
+e) Ver 2 versiones alternativas del Hook
 ```
 
-**No avances hasta recibir confirmación.** Esta gate es separada de la confirmación de costo de generación.
+**No avanzar hasta recibir respuesta.** Esta gate es independiente de la confirmación de costo de generación de video.
 
-### 5. Prompt para Beatra
+---
 
-Una vez aprobado, entrega:
+## Prompt para Beatra
+
+Una vez aprobado el guión:
 
 ```bash
-# Instalar si no está instalado:
+# Instalar si no está:
 npx skills add beatra-ai/lyrics-to-song-skill
-
-# Luego invoca el skill y pasa esta letra:
 ```
 
+Pasar a Beatra:
 ```
-LETRA PARA BEATRA:
+LETRA:
 [letra completa del guión]
 
 PARÁMETROS:
-- Género: [género]
-- BPM: [BPM]
-- Duración: [X]s
-- Mood: [místico / empoderador / etc.]
-- Idioma: español
+Género: [género del guión]
+BPM: [BPM del guión]
+Duración: [X]s
+Mood: [tono del guión]
+Idioma: [idioma/dialecto]
+Instrucción extra: La letra tiene 9 secciones — mantener el tempo 
+parejo a través de todas. La sección 9 (CTA) debe terminar con 
+resolución musical, no un fade.
 ```
 
 ---
 
-## Ejemplo de guión — Tarot para Principiantes
+## Checklist de calidad antes de entregar
 
-```
-🎵 HISTORIA CANTADA — TAROT PARA PRINCIPIANTES
-Género: Pop electrónico con elementos étnicos
-BPM sugerido: 120
-Duración total estimada: 30 s
-Ratio: 9:16
-
----
-
-BEAT 1 — HOOK (3s)
-Letra: "¿Y si el universo ya tiene tu respuesta?"
-Visual: Personaje místico con ojos brillantes, mira directo a cámara, humo dorado
-Emoción: Curiosidad / pausa en el scroll
-
-BEAT 2 — PAIN (3s)
-Letra: "Cuando todo se siente incierto y sin salida…"
-Visual: Ciudad nocturna, persona sola, lluvia suave
-Emoción: Reconocimiento / empatía
-
-BEAT 3 — AGITATION (3s)
-Letra: "El trabajo, el amor, el dinero — todo en duda"
-Visual: Cartas confusas, imágenes superpuestas de preocupaciones
-Emoción: Tensión que se intensifica
-
-BEAT 4 — DREAM (3s)
-Letra: "Imagina saber qué camino elegir hoy"
-Visual: Luz dorada rompiendo la oscuridad, cielo estrellado
-Emoción: Esperanza / aspiración
-
-BEAT 5 — BRIDGE (2s)
-Letra: "Las cartas hablan cuando tú las escuchas"
-Visual: Mano del personaje extendiendo una carta brillante
-Emoción: Transición mágica
-
-BEAT 6 — SOLUTION (4s)
-Letra: "Tarot para Principiantes — tu guía en lo que viene"
-Visual: Logo, interfaz/lectura en vivo, personaje sonriente con cartas
-Emoción: Alivio / solución clara
-
-BEAT 7 — PROOF (3s)
-Letra: "Miles de lecturas. Respuestas reales."
-Visual: Pantalla con testimonios breves, estrellas doradas
-Emoción: Confianza / credibilidad
-
-BEAT 8 — TRANSFORMATION (3s)
-Letra: "Ya no caminas sola — el universo te habla"
-Visual: Misma persona del beat 2, ahora serena, con luz dorada
-Emoción: Transformación emocional
-
-BEAT 9 — CTA (3s)
-Letra: "Reserva tu lectura hoy. El momento es ahora."
-Visual: Botón animado, URL o usuario de IG, personaje haciendo gesto de invitación
-Emoción: Urgencia suave / acción
-
----
-
-LETRA COMPLETA (para Beatra):
-¿Y si el universo ya tiene tu respuesta?
-Cuando todo se siente incierto y sin salida…
-El trabajo, el amor, el dinero — todo en duda
-
-Imagina saber qué camino elegir hoy
-Las cartas hablan cuando tú las escuchas
-
-Tarot para Principiantes — tu guía en lo que viene
-Miles de lecturas. Respuestas reales.
-Ya no caminas sola — el universo te habla
-
-Reserva tu lectura hoy. El momento es ahora.
-
-BRIEF DE PERSONAJE (para video-gen):
-Nombre del personaje: Luna (vidente IA)
-Descripción física: Mujer latina, 28–35 años aparentes, ojos oscuros y mirada intensa, 
-  cabello largo oscuro con mechones dorados, vestimenta: túnica morada con detalles dorados,
-  joyería étnica con cristales
-Estética de mundo: Interior místico — velas, cristales, tela de terciopelo morado,
-  humo dorado, cartas del tarot iluminadas, luz de luna suave
-Paleta visual: #FFC83D (dorado), #1A0B2E (morado oscuro profundo)
-```
+- [ ] Hook funciona en 3 palabras sin contexto previo
+- [ ] Beat 2 (Pain) nombra una emoción que el avatar reconoce en sí mismo
+- [ ] Beat 3 (Agitation) es más intenso que el Beat 2
+- [ ] No hay nombre del producto antes del Beat 6
+- [ ] El CTA dice exactamente qué hacer (verbo + objeto + urgencia)
+- [ ] Cada beat cabe en ≤ 4 segundos cantado al BPM elegido
+- [ ] No hay adjetivos vacíos en ningún beat
+- [ ] El Brief de Personaje NO incluye información real del usuario (demografía, nombres reales de clientes, etc.)
+- [ ] La letra completa para Beatra está limpia (sin etiquetas de beat)

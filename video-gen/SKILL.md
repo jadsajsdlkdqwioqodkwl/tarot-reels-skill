@@ -1,227 +1,349 @@
 ---
 name: video-gen
 description: >-
-  Genera clips de video AI para reels/anuncios usando fal.ai (Kling 3.0, Seedance 2.0,
-  Flux). Incluye flujo completo de identity lock: character sheet de 10 imágenes con Flux,
-  luego generación de clips con Kling O3 usando element referencing para consistencia
-  de personaje. Pensado para "Tarot para Principiantes" pero adaptable. Usar después
+  Genera clips de video AI para reels/anuncios usando fal.ai (Kling O3, Flux).
+  Incluye flujo completo de identity lock: character sheet de 10 imágenes con Flux,
+  luego generación de clips con Kling O3 usando element referencing. Usar después
   del skill song-script.
 compatibility: claude-code
-version: 1.0.0
+version: 2.0.0
 ---
 
 # Video Gen — Generación de Clips AI con fal.ai
 
 ## Configuración
 
-- **SDK:** `@fal-ai/client` (npm)
-- **Auth:** Variable de entorno `FAL_KEY` — nunca la imprimas ni la commits.
-- **`.env` obligatorio:** Copia `.env.example` y agrega `FAL_KEY=tu_key_aquí`
-- **`.gitignore`:** Verificar que `.env` esté excluido ANTES de cualquier commit.
-
 ```bash
-# Setup inicial
 npm install @fal-ai/client sharp
-echo "FAL_KEY=" >> .env
-echo ".env" >> .gitignore
+cp .env.example .env   # agregar FAL_KEY al .env
 ```
 
-Antes del primer llamado, confirmar que `.gitignore` excluye `.env`.
+- **Auth:** `FAL_KEY` en `.env` — nunca imprimir ni commitear
+- **Verificar antes de cualquier commit:** `git status` — confirmar que `.env` no aparece
+- **Si se expuso una key:** rotar en https://fal.ai/dashboard/keys inmediatamente
+
+> ℹ️ **Sobre el negocio:** No hay información hardcodeada de ningún negocio.
+> El usuario proveerá todos los datos al invocar el skill.
 
 ---
 
-## Modelos disponibles y costos estimados
+## Modelos y costos
 
-| Modelo | fal.ai endpoint | Costo aprox. | Cuándo usarlo |
+| Modelo | Endpoint fal.ai | Costo aprox. | Cuándo usarlo |
 |--------|----------------|--------------|---------------|
-| **Kling O3** (identity lock) | `fal-ai/kling-video/o3/pro/text-to-video` | $0.10–0.17/clip 5s | Personaje consistente beat a beat |
-| **Kling V3** (cinematic) | `fal-ai/kling-video/v3/pro/text-to-video` | $0.11–0.17/clip 5s | Tomas de ambiente sin personaje |
-| **Seedance 2.0 i2v** | `fal-ai/bytedance/seedance/v2/pro/image-to-video` | $0.24–0.30/clip 5s | Animar una imagen fija de personaje |
-| **Flux Schnell** (character sheet) | `fal-ai/flux/schnell` | $0.003/imagen | Generar 10 ángulos del personaje |
-| **Flux Dev** (character sheet HQ) | `fal-ai/flux/dev` | $0.025/imagen | Personaje con mayor detalle |
+| **Kling O3 Pro** | `fal-ai/kling-video/o3/pro/text-to-video` | $0.10–0.17 / clip 5s | Personaje consistente (identity lock) |
+| **Kling V3 Pro** | `fal-ai/kling-video/v3/pro/text-to-video` | $0.11–0.17 / clip 5s | Ambientes sin personaje, cinematográfico |
+| **Flux Dev** | `fal-ai/flux/dev` | $0.025 / imagen | Character sheet alta calidad |
+| **Flux Schnell** | `fal-ai/flux/schnell` | $0.003 / imagen | Pruebas rápidas de concepto |
 
-**Estimación para un reel de 9 beats:**
-- Character sheet: 10 imágenes × $0.003 = **$0.03**
-- 9 clips × 5s Kling O3: 9 × ~$0.14 = **$1.26**
-- **Total estimado: ~$1.30 por reel** (sin audio)
+### Estimación de costo por reel de 9 beats
+
+```
+Character sheet (primera vez, 10 imgs Flux Dev):  10 × $0.025  = $0.25
+9 clips × 5s Kling O3:                            9  × ~$0.14  = $1.26
+──────────────────────────────────────────────────────────────────────
+Total estimado primer reel:                                      ~$1.51
+Reels siguientes (misma personaje):                              ~$1.26
+```
+
+**Mostrar esta estimación y pedir confirmación ANTES de generar.** No generar hasta recibir "sí".
 
 ---
 
 ## FASE 1 — Character Sheet (Identity Lock)
 
-### Flujo obligatorio antes de generar video
+### Cuándo ejecutar esta fase
+- **Primera vez** con este personaje → ejecutar completo (Pasos 1a + 1b)
+- **Personaje ya existe** en `references/characters/` → saltar al Paso 1c
+- Verificar existencia: `ls references/characters/`
 
-El identity lock requiere tener imágenes de referencia del personaje desde múltiples ángulos antes de generar cualquier clip.
+### Paso 1a — Generar hero portrait
 
-#### 1a. Generar hero portrait
+El hero portrait es el anchor visual. Todos los clips del reel lo referenciarán.
+
+**Reglas del prompt de hero:**
+- Fondo neutro (sólido oscuro o sólido claro — no fondos complejos en el hero)
+- Full body o waist-up — nunca solo cara (el modelo necesita ver proporciones completas)
+- Iluminación plana y pareja — no dramática en el hero (la dramatización va en los clips)
+- Incluir: edad aparente, rasgos físicos, vestimenta, textura de piel visible
+
+**Estructura del prompt:**
+
+```
+Full body front view, head to toe. A [EDAD]-year-old [GÉNERO] with [CABELLO],
+[TEXTURA_PIEL], wearing [VESTIMENTA]. [FONDO_NEUTRO].
+Photorealistic, visible skin texture, individual hair strands catching light.
+[PROPORCIONES_CORPORALES]. Direct eye contact, relaxed stance.
+Soft even studio lighting from both sides.
+```
+
+**Variables clave:**
+
+| Variable | Cómo llenar | Qué evitar |
+|----------|-------------|------------|
+| `CABELLO` | color + textura + largo (ej: "long dark wavy hair with golden highlights") | "hermoso cabello" sin especificar |
+| `TEXTURA_PIEL` | tono + 2 cues de realismo (ej: "olive skin, visible pores, slight warmth on cheeks") | "piel perfecta", "sin imperfecciones" |
+| `VESTIMENTA` | material + color + fit (ej: "deep purple velvet robe with gold embroidery") | solo el nombre de la prenda sin descripción |
+| `FONDO_NEUTRO` | "Clean dark background, deep [color] gradient" o "Clean white studio background" | fondos con objetos o texturas complejas |
+
+**Código:**
 
 ```javascript
 import { fal } from "@fal-ai/client";
 
-const heroResult = await fal.subscribe("fal-ai/flux/schnell", {
+const heroResult = await fal.subscribe("fal-ai/flux/dev", {
   input: {
-    prompt: `[DESCRIPCIÓN_PERSONAJE] — hero portrait, frente directa, lighting suave,
-      fondo neutro oscuro, ultra HD, fotografía realista, estilo editorial.
-      Colores: vestimenta morada #1A0B2E con detalles dorados #FFC83D.
-      Sin texto, sin marcos.`,
+    prompt: "[PROMPT_COMPLETO_AQUÍ]",
     image_size: "portrait_4_3",
     num_images: 1,
     enable_safety_checker: true,
+    guidance_scale: 3.5,
+    num_inference_steps: 28,
   },
   logs: true,
 });
 
 const heroImageUrl = heroResult.data.images[0].url;
-// Mostrar al usuario y esperar aprobación antes de continuar
+// Guardar en: references/characters/[nombre]/01-hero-front.jpg
 ```
 
-**GATE OBLIGATORIA:** Mostrar el hero portrait al usuario y pedir aprobación antes de los 9 ángulos.
+**QA obligatorio del hero:** Ver checklist de QA al final de esta sección.  
+**Gate obligatoria:** Mostrar el hero y esperar aprobación explícita antes de los 9 ángulos.
 
-#### 1b. Generar 9 ángulos con el hero como referencia
+---
 
-Una vez aprobado el hero, generar estas variaciones (pasando el hero como `image_url` de referencia usando `flux-lora` o `flux-dev` con IP-Adapter, o usando Seedance i2v para los ángulos):
+### Paso 1b — Generar 9 ángulos adicionales
 
-Ángulos requeridos:
-1. Frente directa (hero — ya tenés)
-2. Perfil izquierdo
-3. Perfil derecho
-4. Tres cuartos izquierda
-5. Tres cuartos derecha
-6. Plano detalle — cara + hombros
-7. Plano entero — de pies a cabeza
-8. Espalda (opcional)
-9. Expresión: sonrisa
-10. Expresión: gesto de invitación (mano extendida)
+Con el hero aprobado, generar los 9 ángulos restantes usando el hero como `lora_path` o pasando la URL como referencia en el prompt.
+
+**Los 10 ángulos del character sheet:**
+
+| # | Archivo | Ángulo | Prefix del prompt | Notas de pose/iluminación |
+|---|---------|--------|-------------------|---------------------------|
+| 1 | `01-hero-front.jpg` | Full body frontal (hero) | `Full body front view, head to toe.` | Ya generado — es el anchor |
+| 2 | `02-3q-left.jpg` | 3/4 izquierda | `Three-quarter view from the left.` | 45° hacia cámara-izquierda, mirando al lente |
+| 3 | `03-3q-right.jpg` | 3/4 derecha | `Three-quarter view from the right.` | 45° hacia cámara-derecha, mirando al lente |
+| 4 | `04-profile-left.jpg` | Perfil izquierdo | `Left profile view.` | Perfil completo, luz de rim desde atrás |
+| 5 | `05-profile-right.jpg` | Perfil derecho | `Right profile view.` | Perfil completo, luz de rim desde atrás |
+| 6 | `06-face-closeup.jpg` | Primer plano cara | `Face close-up, tight crop.` | Frente a barbilla, beauty lighting, catchlights en ojos |
+| 7 | `07-back-shoulder.jpg` | Espalda / sobre hombro | `Back view, looking over shoulder.` | Mira hacia atrás sobre hombro derecho |
+| 8 | `08-medium-portrait.jpg` | Retrato medio | `Front-facing medium portrait, waist up.` | De cintura, contacto visual directo |
+| 9 | `09-full-body-3q.jpg` | Cuerpo entero 3/4 | `Full body three-quarter view.` | Largo completo, 45° cámara-izquierda |
+| 10 | `10-above-angle.jpg` | Ángulo superior | `Slightly above angle, looking up at camera.` | Cámara levemente arriba, mentón hacia arriba |
+
+**Prompt por ángulo — estructura:**
+
+```
+[PREFIX_ÁNGULO] The exact same person from the reference — same [DESCRIPCIÓN_CABELLO],
+same [RASGOS_ESPECÍFICOS], same [COLOR_OJOS] eyes, same [VESTIMENTA].
+[FONDO según ángulo]. Photorealistic, same skin texture and tone.
+```
+
+**Código:**
 
 ```javascript
 const angles = [
-  "profile left view, same character",
-  "profile right view, same character",
-  "three-quarter left view",
-  "three-quarter right view",
-  "close-up face and shoulders",
-  "full body standing",
-  "smiling expression, front view",
-  "hand extended forward, inviting gesture",
-  "dramatic lighting, mystical glow",
+  { file: "02-3q-left.jpg",      prefix: "Three-quarter view from the left." },
+  { file: "03-3q-right.jpg",     prefix: "Three-quarter view from the right." },
+  { file: "04-profile-left.jpg", prefix: "Left profile view." },
+  { file: "05-profile-right.jpg",prefix: "Right profile view." },
+  { file: "06-face-closeup.jpg", prefix: "Face close-up, tight crop." },
+  { file: "07-back-shoulder.jpg",prefix: "Back view, looking over her shoulder." },
+  { file: "08-medium-portrait.jpg",prefix: "Front-facing medium portrait, waist up." },
+  { file: "09-full-body-3q.jpg", prefix: "Full body three-quarter view." },
+  { file: "10-above-angle.jpg",  prefix: "Slightly above angle, looking up at camera." },
 ];
 
-const sheetResults = await Promise.all(
-  angles.map(angle =>
-    fal.subscribe("fal-ai/flux/dev", {
-      input: {
-        prompt: `[DESCRIPCIÓN_PERSONAJE], ${angle}. Misma persona del hero portrait.
-          Fondo: oscuro con humo dorado suave. Colores: #1A0B2E y #FFC83D.
-          Fotografía editorial realista. Consistencia total de rasgos.`,
-        image_size: "portrait_4_3",
-        num_images: 1,
-      },
-    })
-  )
-);
-
-// Guardar todas las imágenes en references/characters/[nombre-personaje]/
+// Generar en secuencia (no paralelo) para evitar rate limits
+for (const angle of angles) {
+  const result = await fal.subscribe("fal-ai/flux/dev", {
+    input: {
+      prompt: `${angle.prefix} The exact same person from the reference — [MISMA_DESCRIPCIÓN_COMPLETA]. [FONDO_NEUTRO]. Photorealistic.`,
+      image_size: "portrait_4_3",
+      num_images: 1,
+    },
+  });
+  // Guardar en references/characters/[nombre]/[angle.file]
+}
 ```
 
-Guardar el character sheet en `references/characters/[nombre]/` con nombres numerados:
-`01-hero.jpg`, `02-perfil-izq.jpg`, ... `10-gesto-invitacion.jpg`
+**Naming convention para la carpeta:**
+
+```
+references/characters/[nombre]-[cabello]-[rasgo-principal]-[tono-piel]/
+```
+
+Ejemplos:
+- `luna-cabello-oscuro-dorado-mistica-oliva/`
+- `sofia-rubia-ondulada-freckles-clara/`
+- `kai-oscuro-corto-mandibula-fuerte-moreno/`
+
+### Paso 1c — QA del character sheet
+
+Para cada imagen, verificar:
+
+- [ ] Mismo color y textura de cabello que el hero
+- [ ] Misma forma de cara y rasgos que el hero
+- [ ] Mismo tono de piel que el hero
+- [ ] Misma vestimenta que el hero
+- [ ] Sin extremidades extra o faltantes
+- [ ] Sin rostros duplicados o fusionados
+- [ ] Texto ilegible o ausente (no debe haber texto en las imágenes)
+- [ ] Si hay defecto grave: regenerar con prompt refinado, máx **2 reintentos**
+
+**Retry cap:** 2 reintentos por imagen (3 intentos totales).
+Si el defecto persiste tras 2 reintentos: informar al usuario, mostrar el mejor intento, preguntar cómo proceder.
 
 ---
 
 ## FASE 2 — Generación de clips por beat
 
-### Consumir el guión de song-script
+### Consumir el guión del skill song-script
 
-Para cada beat del guión (del skill `song-script`), generar un clip de 5s con Kling O3:
+El skill `song-script` entrega un `BRIEF DE PERSONAJE` y 9 beats con `Visual:` por beat.
+Usar esos datos para construir el prompt de cada clip.
+
+### Fórmula de prompt para clips con personaje (Kling O3)
+
+```
+[EMOCIÓN_DEL_BEAT en presente] — [PERSONAJE: nombre + acción específica] en [AMBIENTE].
+[DETALLE DE LUZ]. [MOVIMIENTO DE CÁMARA].
+[NOTA DE ESTÉTICA]. Vertical 9:16. [CALIDAD].
+NO texto en pantalla. NO subtítulos. Movimiento continuo fluido 5 segundos.
+```
+
+**Capas del prompt de video:**
+
+| Capa | Qué especificar | Ejemplo |
+|------|-----------------|---------|
+| **Acción** | verbo + dirección + velocidad | "extiende la mano izquierda lentamente hacia cámara" |
+| **Expresión facial** | emoción + dirección de mirada | "mirada directa a cámara, expresión serena y segura" |
+| **Ambiente** | 3 objetos concretos del espacio | "velas encendidas, cristales sobre terciopelo, humo suave" |
+| **Luz** | fuente + temperatura + calidad | "luz de vela dorada lateral, sombras suaves en rostro" |
+| **Cámara** | movimiento + velocidad | "zoom suave entrante, 5 segundos" |
+| **Restricciones** | qué NO debe aparecer | "NO texto, NO subtítulos, NO cortes" |
+
+**Palabras de movimiento de cámara (usar estas):**
+- `slow zoom in toward subject` (acerca el personaje)
+- `slow zoom out revealing environment` (aleja para mostrar ambiente)
+- `gentle pan left/right` (barrido lateral suave)
+- `static shot, subtle camera shake` (estático con microvibración natural)
+- `slow tilt up from hands to face` (paneo vertical)
+
+**Palabras a EVITAR en prompts de video:**
+- ❌ "cinematic" (genérico, el modelo lo ignora)
+- ❌ "stunning", "beautiful", "amazing" (adjetivos vacíos)
+- ❌ "8K", "ultra HD", "high resolution" (no afectan la calidad en modelos de video)
+- ❌ "professional lighting" (especificar el tipo exacto en cambio)
+- ❌ "perfect" en cualquier forma
+
+### Código para generación de clips
 
 ```javascript
 import { fal } from "@fal-ai/client";
-import { readFileSync } from "fs";
+import fs from "fs";
 
-// Cargar las imágenes de referencia del character sheet
-const referenceImages = [
-  "references/characters/luna/01-hero.jpg",
-  "references/characters/luna/04-tres-cuartos-izq.jpg",
-  "references/characters/luna/06-plano-entero.jpg",
+// Cargar referencias del character sheet aprobado
+const characterRefs = [
+  "references/characters/[carpeta]/01-hero-front.jpg",
+  "references/characters/[carpeta]/06-face-closeup.jpg",
+  "references/characters/[carpeta]/08-medium-portrait.jpg",
 ];
 
-async function generateBeatClip(beat) {
+// Convertir imágenes a URLs de datos base64 para element referencing
+async function imageToBase64(path) {
+  const data = fs.readFileSync(path);
+  const ext = path.split('.').pop();
+  return `data:image/${ext};base64,${data.toString('base64')}`;
+}
+
+async function generateBeatClip(beat, prompt) {
   const result = await fal.subscribe(
     "fal-ai/kling-video/o3/pro/text-to-video",
     {
       input: {
-        prompt: beat.visual_prompt,
-        duration: "5",          // siempre 5s por beat
-        aspect_ratio: "9:16",   // vertical para reel
-        element_reference_images: referenceImages,  // identity lock
-        // NO usar generate_audio: true — el audio viene de Beatra
+        prompt: prompt,
+        duration: "5",
+        aspect_ratio: "9:16",
+        // Identity lock: pasar el hero como referencia de elemento
+        // Nota: verificar documentación actual de fal.ai para el parámetro exacto
+        // puede ser element_reference_images, reference_images, o image_url
+        negative_prompt: "text, subtitles, watermark, blurry, distorted face, extra limbs, duplicate person",
       },
       logs: true,
       onQueueUpdate: (update) => {
         if (update.status === "IN_PROGRESS") {
-          console.log(`Beat ${beat.number}: ${update.logs?.slice(-1)[0]?.message}`);
+          const lastLog = update.logs?.slice(-1)[0]?.message;
+          if (lastLog) console.log(`Beat ${beat}: ${lastLog}`);
         }
       },
     }
   );
 
   return {
-    beat: beat.number,
+    beat: beat,
     videoUrl: result.data.video?.url,
     requestId: result.requestId,
   };
 }
+
+// Generar los 9 clips
+const clips = [];
+for (let i = 1; i <= 9; i++) {
+  const clip = await generateBeatClip(i, beatPrompts[i]);
+  clips.push(clip);
+  
+  // Log inmediato
+  logToFile({
+    timestamp: new Date().toISOString(),
+    model: "kling-video/o3/pro",
+    beat: i,
+    duration: "5s",
+    aspect_ratio: "9:16",
+    reference_images_count: characterRefs.length,
+    request_id: clip.requestId,
+    video_url: clip.videoUrl,
+    status: clip.videoUrl ? "completed" : "failed",
+    cost_usd_estimate: 0.14,
+    retry_count: 0,
+  });
+}
 ```
 
-### Prompt formula para cada beat (adaptar el visual del guión)
+### Nota sobre identity lock en fal.ai
 
-```
-[EMOCIÓN DEL BEAT]. [PERSONAJE: nombre + acción] en [AMBIENTE].
-[DETALLE CINEMATOGRÁFICO]. [MOVIMIENTO DE CÁMARA].
-Estética: luz de vela dorada, humo suave, cristales brillantes, paleta #1A0B2E y #FFC83D.
-Vertical 9:16. Cine latinoamericano contemporáneo. Ultra HD.
-NO texto en pantalla. NO subtítulos. Movimiento continuo fluido.
+Kling O3 en fal.ai soporta "element referencing" para consistencia de personaje.
+**Antes de implementar, verificar el parámetro exacto actual:**
+
+```bash
+# Consultar la documentación actualizada del endpoint
+curl https://fal.run/fal-ai/kling-video/o3/pro/text-to-video --help
+# O revisar: https://fal.ai/models/fal-ai/kling-video
 ```
 
-**Ejemplo para Beat 1 — Hook:**
-```
-Personaje místico latino mira directo a cámara con intensidad serena.
-Humo dorado envuelve sus hombros. Ojos brillantes con efecto de luz interior.
-Cámara hace zoom suave hacia adelante. Fondo: terciopelo morado oscuro con velas.
-Estética: misterioso, elegante, íntimo. 9:16 vertical. Ultra HD.
-NO texto. Movimiento continuo fluido 5 segundos.
-```
+Los parámetros pueden ser `element_reference_images`, `reference_images`, o similar.
+Si el parámetro cambió, usar el que esté documentado en fal.ai al momento de implementar.
 
 ---
 
-## FASE 3 — QA y gestión de costos
+## FASE 3 — QA de clips
 
-### Antes de generar — mostrar estimación
+Para cada clip generado, verificar:
 
-```
-Estimación de costo para este reel:
-  Character sheet (10 imgs Flux Dev): 10 × $0.025 = $0.25
-  9 clips × 5s Kling O3: 9 × $0.14 = $1.26
-  ────────────────────────────────────
-  Estimado total: ~$1.51
+- [ ] El personaje se ve consistente con el character sheet (misma cara, cabello, vestimenta)
+- [ ] No hay artefactos visuales severos (manos deformadas, rostro duplicado, extremidades extras)
+- [ ] El movimiento de cámara es suave y continuo (no hay cortes dentro del clip)
+- [ ] No hay texto ni subtítulos en el video
+- [ ] El ambiente corresponde al beat del guión
 
-⚠️ Estimación — el costo real puede variar ±20%.
-¿Procedemos? (sí / no / generar solo [X] beats primero como prueba)
-```
+**Si hay defecto:** regenerar con prompt refinado, máx 2 reintentos.  
+**Retry cap:** 2 reintentos por clip. Si persiste: informar al usuario, mostrar el mejor intento.
 
-No generar hasta recibir confirmación explícita.
-
-### QA por clip
-
-Después de cada clip generado:
-1. Revisar que el personaje sea visualmente consistente con el character sheet
-2. Revisar que no haya artefactos visuales severos (manos deformadas, rostro distorsionado)
-3. Si hay defecto grave: regenerar con prompt refinado (máx 2 reintentos por clip)
-4. Registrar en `logs/fal-api.jsonl`:
+**Log de cada clip** en `logs/fal-api.jsonl`:
 
 ```json
 {
-  "timestamp": "2026-10-25T...",
+  "timestamp": "ISO 8601",
   "model": "kling-video/o3/pro",
   "beat": 1,
   "duration": "5s",
@@ -229,71 +351,78 @@ Después de cada clip generado:
   "reference_images_count": 3,
   "request_id": "...",
   "video_url": "...",
-  "status": "completed",
+  "status": "completed | failed",
   "cost_usd_estimate": 0.14,
   "retry_count": 0
 }
 ```
 
-### Retry cap
-
-Máximo 2 reintentos por clip (3 intentos totales).
-Si el defecto persiste: informar al usuario, mostrar el mejor intento, preguntar cómo proceder.
-
 ---
 
-## FASE 4 — Stitch y entrega a reels-editor
-
-Una vez todos los clips generados y aprobados:
+## FASE 4 — Stitch y handoff a reels-editor
 
 ```bash
-# Crear lista de clips en orden
-ls -1 outputs/beats/*.mp4 | sort > /tmp/concat_list.txt
-sed -i 's/^/file /' /tmp/concat_list.txt
+# Descargar clips y crear lista en orden
+# (asumir que clips se descargaron a outputs/beats/)
+ls -1 outputs/beats/*.mp4 | sort -t_ -k2 -n > /tmp/clips_ordered.txt
+sed -i 's/^/file /' /tmp/clips_ordered.txt
 
-# Concatenar clips (sin audio — el audio viene de Beatra)
-ffmpeg -f concat -safe 0 -i /tmp/concat_list.txt -c copy outputs/reel_raw.mp4
+# Concatenar (sin re-encodear si los codecs son iguales)
+ffmpeg -f concat -safe 0 -i /tmp/clips_ordered.txt -c copy outputs/reel_raw.mp4
 
-# Entregar al skill reels-editor para:
-# - Agregar captions (HyperFrames + faster-whisper)
-# - Mixar con el audio de Beatra
-# - Medir AV delay (debe quedar 0.0ms)
-# - Exportar en ratio 4:5 o 9:16 final
+# Si hay error de codec: re-encodear
+ffmpeg -f concat -safe 0 -i /tmp/clips_ordered.txt \
+  -vf "scale=1080:1920" -c:v libx264 -preset fast -crf 18 \
+  outputs/reel_raw.mp4
 ```
 
-**Handoff al reels-editor:**
-```
-El video raw está en: outputs/reel_raw.mp4
-El audio de Beatra está en: outputs/[nombre]_audio.mp3
+**Handoff al skill `reels-editor`:**
 
-Próximo paso: invocar el skill reels-editor con:
+```
+Video raw listo en: outputs/reel_raw.mp4
+Audio de Beatra en: outputs/audio/[archivo].mp3
+
+Invocar skill reels-editor con:
 - video_input: outputs/reel_raw.mp4
-- audio_input: outputs/[nombre]_audio.mp3
-- captions: sí (transcribir desde el audio)
-- ratio: 4:5 (para Meta Ads) o 9:16 (para Stories/TikTok)
+- audio_input: outputs/audio/[archivo].mp3
+- captions: sí
+- ratio: 4:5 (Meta Ads) o 9:16 (Stories/TikTok)
+- target_av_delay: 0.0ms (obligatorio)
 ```
 
 ---
 
-## Archivo .env.example
+## Gate de estimación de costo (OBLIGATORIA)
 
-```bash
-# fal.ai API key — obtener en https://fal.ai/dashboard/keys
-FAL_KEY=
+Antes de generar cualquier cosa, mostrar siempre:
 
-# Opcional: sobreescribir endpoints si fal.ai cambia versiones
-FAL_KLING_O3_ENDPOINT=fal-ai/kling-video/o3/pro/text-to-video
-FAL_KLING_V3_ENDPOINT=fal-ai/kling-video/v3/pro/text-to-video
-FAL_SEEDANCE_ENDPOINT=fal-ai/bytedance/seedance/v2/pro/image-to-video
-FAL_FLUX_ENDPOINT=fal-ai/flux/dev
 ```
+💰 Estimación de costo antes de proceder
+
+  Character sheet (10 imgs × $0.025 Flux Dev):    $0.25
+  [o] Character sheet ya existe — $0.00
+
+  Clips (N beats × 5s × $0.14 Kling O3):          $X.XX
+  ─────────────────────────────────────────────────
+  Total estimado:                                  ~$X.XX
+
+  ⚠️ Estimación — verificar costo real en https://fal.ai/dashboard/billing
+  
+  ¿Procedemos?
+  a) Sí, generar todo
+  b) Generar solo el character sheet primero
+  c) Generar solo beats [números] como prueba
+  d) Cancelar
+```
+
+No generar hasta recibir respuesta explícita.
 
 ---
 
-## Seguridad (OBLIGATORIO)
+## Checklist de seguridad (antes de cada commit)
 
-Antes de cualquier commit:
-1. `git status` — revisar que `.env` NO aparezca en los archivos a commitear
-2. Si aparece: `git rm --cached .env` y verificar que `.gitignore` lo excluya
-3. Nunca imprimir el valor de `FAL_KEY` en logs ni en chat
-4. Si se expuso accidentalmente: rotar la key en https://fal.ai/dashboard/keys inmediatamente
+- [ ] `git status` — `.env` NO aparece en los archivos staged
+- [ ] `FAL_KEY` no está hardcodeada en ningún archivo `.js`, `.mjs`, `.json`
+- [ ] `logs/fal-api.jsonl` no contiene API keys ni rutas personales
+- [ ] `references/characters/` está en `.gitignore`
+- [ ] `outputs/` está en `.gitignore`
